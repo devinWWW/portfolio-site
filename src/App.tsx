@@ -54,8 +54,6 @@ function HeartIcon() {
 
 function App() {
   const fullName = 'Devin Widmer'
-  const caretBlinkDurationMs = 880
-  const caretBlinkCount = 4
   const location = useLocation()
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedPreference = localStorage.getItem('theme')
@@ -85,9 +83,6 @@ function App() {
 
       if (currentIndex >= fullName.length) {
         setNameAnimationPhase('blinking')
-        timeoutId = window.setTimeout(() => {
-          setNameAnimationPhase('idle')
-        }, caretBlinkDurationMs * caretBlinkCount)
         return
       }
 
@@ -102,7 +97,7 @@ function App() {
         window.clearTimeout(timeoutId)
       }
     }
-  }, [caretBlinkCount, caretBlinkDurationMs, fullName])
+  }, [fullName])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode)
@@ -236,6 +231,11 @@ function App() {
                 <span
                   aria-hidden="true"
                   className={`mystery-typing-caret ${nameAnimationPhase === 'blinking' ? 'is-blinking' : ''}`}
+                  onAnimationEnd={() => {
+                    if (nameAnimationPhase === 'blinking') {
+                      setNameAnimationPhase('idle')
+                    }
+                  }}
                 />
               )}
             </span>

@@ -58,7 +58,11 @@ html.dark body {
 }
 
 .mystery-typing-caret.is-blinking {
-  animation: caretBlink 880ms ease-in-out infinite;
+  animation-name: caretBlink;
+  animation-duration: 880ms;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 4;
+  animation-fill-mode: forwards;
 }
 
 @keyframes caretBlink {
