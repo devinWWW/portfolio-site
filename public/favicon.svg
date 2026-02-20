@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="DW favicon">
+  <rect width="512" height="512" fill="#09090b" />
+  <text
+    x="50%"
+    y="56%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#f4f4f5"
+    font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+    font-size="250"
+    font-weight="800"
+    letter-spacing="6"
+  >
+    DW
+  </text>
+</svg>

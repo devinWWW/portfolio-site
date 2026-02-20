@@ -6,8 +6,8 @@ export default function ContactPage() {
       </h2>
 
       <p className="m-0 text-[0.98rem] leading-7 text-zinc-700 dark:text-zinc-300">
-        I&apos;m always interested in hearing about new opportunities, collaborations, or just
-        chatting about technology.
+        Interested in working together, discussing a project, or talking tech? I&apos;d love to hear
+        from you.
       </p>
 
       <p className="m-0 text-[0.98rem] leading-7 text-zinc-700 dark:text-zinc-300">
@@ -39,7 +39,7 @@ export default function ContactPage() {
       </p>
 
       <p className="m-0 text-[0.98rem] leading-7 text-zinc-700 dark:text-zinc-300">
-        Feel free to reach out via email or connect with me on any of the platforms above!
+        Feel free to email or connect with me on the platforms listed above!
       </p>
     </section>
   )
