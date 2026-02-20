@@ -27,6 +27,22 @@ const SIMULATION_POLL_MS = 120
 const VISIBLE_CANDLES = 56
 const MAX_CANDLE_HISTORY = 320
 const LEVERAGE = 5
+const PLAYER_ID_STORAGE_KEY = 'sitePlayerId'
+
+function getOrCreatePlayerId() {
+  const existing = localStorage.getItem(PLAYER_ID_STORAGE_KEY)
+  if (existing && /^[a-zA-Z0-9_-]{8,120}$/.test(existing)) {
+    return existing
+  }
+
+  const generated =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().replace(/-/g, '')
+      : `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+
+  localStorage.setItem(PLAYER_ID_STORAGE_KEY, generated)
+  return generated
+}
 
 function generatePretendHistory(count: number, seed: number) {
   let current = seed
@@ -279,9 +295,13 @@ export default function MemecoinSimulatorPage() {
     const livePnl = getPnlMultiple(position, marketCap)
     if (livePnl <= -1) {
       setPosition(null)
+      setTradeAmount((current) => {
+        const nextMax = Number(Math.max(balance, 10).toFixed(2))
+        return Math.min(current, nextMax)
+      })
       setStatus('Liquidated at -100.00%')
     }
-  }, [marketCap, position])
+  }, [balance, marketCap, position])
 
   const openTrade = (side: 'long' | 'short') => {
     if (position) {
@@ -308,7 +328,10 @@ export default function MemecoinSimulatorPage() {
     }
 
     const payout = Math.max(0, position.collateral * (1 + pnlMultiple))
-    setBalance((current) => current + payout)
+    const nextBalance = balance + payout
+    const nextMaxTradeAmount = Number(Math.max(nextBalance, 10).toFixed(2))
+    setBalance(nextBalance)
+    setTradeAmount((current) => Math.min(current, nextMaxTradeAmount))
     setPosition(null)
     setStatus(`Trade closed at ${formatPnlPercent(pnlMultiple)}`)
   }
@@ -342,7 +365,10 @@ export default function MemecoinSimulatorPage() {
     try {
       const response = await fetch('/api/memecoin-leaderboard', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-player-id': getOrCreatePlayerId(),
+        },
         body: JSON.stringify({ score: balance }),
       })
 

@@ -35,6 +35,22 @@ const SCORE_RATE_PER_SECOND = 14
 const FLYING_CLEARANCES = [18, 34, 50]
 const ROTATION_FRAMES_PER_JUMP = 40
 const ROTATION_EASE_POWER = 1.65
+const PLAYER_ID_STORAGE_KEY = 'sitePlayerId'
+
+function getOrCreatePlayerId() {
+  const existing = localStorage.getItem(PLAYER_ID_STORAGE_KEY)
+  if (existing && /^[a-zA-Z0-9_-]{8,120}$/.test(existing)) {
+    return existing
+  }
+
+  const generated =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().replace(/-/g, '')
+      : `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+
+  localStorage.setItem(PLAYER_ID_STORAGE_KEY, generated)
+  return generated
+}
 
 function getObstacleHitbox(obstacle: Obstacle) {
   if (obstacle.kind === 'flying') {
@@ -158,7 +174,10 @@ export default function FunPage() {
     try {
       const response = await fetch('/api/leaderboard', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-player-id': getOrCreatePlayerId(),
+        },
         body: JSON.stringify({ score }),
       })
 

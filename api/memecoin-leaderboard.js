@@ -13,8 +13,22 @@ function hashIdentifier(value) {
   return Math.abs(hash).toString(16)
 }
 
-function buildPlayerMember(clientIp) {
-  const hash = hashIdentifier(clientIp || 'unknown')
+function normalizePlayerId(value) {
+  if (typeof value !== 'string') {
+    return null
+  }
+
+  const trimmed = value.trim()
+  if (!/^[a-zA-Z0-9_-]{8,120}$/.test(trimmed)) {
+    return null
+  }
+
+  return trimmed
+}
+
+function buildPlayerMember(clientIp, playerId) {
+  const identitySource = playerId ? `${clientIp || 'unknown'}:${playerId}` : clientIp || 'unknown'
+  const hash = hashIdentifier(identitySource)
   return `player:${hash}`
 }
 
@@ -107,7 +121,8 @@ export default async function handler(req, res) {
 
       const body = parseJsonBody(req)
       const score = normalizeBalance(body.score)
-      const member = buildPlayerMember(clientIp)
+      const playerId = normalizePlayerId(req.headers['x-player-id'])
+      const member = buildPlayerMember(clientIp, playerId)
 
       if (score === null) {
         return res.status(400).json({ error: 'Invalid score' })
