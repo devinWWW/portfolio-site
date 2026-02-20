@@ -59,10 +59,10 @@ function App() {
   const location = useLocation()
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedPreference = localStorage.getItem('theme')
-    if (savedPreference === 'light') {
-      return false
+    if (savedPreference === 'dark') {
+      return true
     }
-    return true
+    return false
   })
   const [pageViews, setPageViews] = useState(0)
   const [heartCount, setHeartCount] = useState(0)
