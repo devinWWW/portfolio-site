@@ -1,7 +1,7 @@
 import { enforceRateLimit, getClientIp, getRedis, parseJsonBody } from './_redis.js'
 
 const LEADERBOARD_KEY = 'game:memecoin:leaderboard'
-const MAX_ENTRIES = 10
+const MAX_ENTRIES = 5
 const MIN_SUBMIT_SCORE = 1000
 
 function hashIdentifier(value) {
@@ -73,6 +73,16 @@ async function readLeaderboard(redis) {
   return mapLeaderboardRows(rows)
 }
 
+async function trimLeaderboard(redis) {
+  const totalEntries = Number(await redis.zcard(LEADERBOARD_KEY))
+  if (totalEntries <= MAX_ENTRIES) {
+    return
+  }
+
+  const removeThroughRank = totalEntries - MAX_ENTRIES - 1
+  await redis.zremrangebyrank(LEADERBOARD_KEY, 0, removeThroughRank)
+}
+
 export default async function handler(req, res) {
   try {
     const redis = getRedis()
@@ -111,6 +121,8 @@ export default async function handler(req, res) {
       if (existingScore === null || score > Number(existingScore)) {
         await redis.zadd(LEADERBOARD_KEY, { score, member })
       }
+
+      await trimLeaderboard(redis)
 
       const entries = await readLeaderboard(redis)
       return res.status(200).json({ entries })

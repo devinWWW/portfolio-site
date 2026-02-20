@@ -501,6 +501,7 @@ export default function FunPage() {
       </div>
 
       <div className="space-y-2 pt-2">
+        <h3 className="m-0 text-[1.08rem] font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Leaderboard</h3>
         {entries.length === 0 ? (
           <p className="m-0 text-[0.98rem] leading-7 text-zinc-700 dark:text-zinc-300">
             No scores yet — be the first.
