@@ -26,7 +26,7 @@ export default function HomePage() {
         </h2>
 
         <p className="m-0">
-          Running growth + systems work across restaurant brands (marketing, automation,
+          Running growth + systems work across brands (marketing, automation,
           analytics, and operations) while continuing to build side projects in AI, trading tools,
           and web products.
         </p>
