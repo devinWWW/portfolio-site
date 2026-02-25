@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import CustomScrollbar from './components/CustomScrollbar'
 import ContactPage from './pages/ContactPage'
 import FunHubPage from './pages/FunHubPage'
@@ -320,6 +321,7 @@ function App() {
           </div>
         </footer>
       </div>
+      <Analytics />
     </div>
   )
 }
